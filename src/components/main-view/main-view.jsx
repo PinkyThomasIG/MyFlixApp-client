@@ -7,9 +7,10 @@ export const MainView = () => {
     {
       id: 1,
       title: "Inception",
-      poster: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+      image:
+        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH",
       description:
-        "A thief who steals corporate secrets through the use of dream-sharing technology...",
+        "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
       genre: {
         name: "Sci-Fi",
         description:
@@ -25,9 +26,10 @@ export const MainView = () => {
     {
       id: 2,
       title: "The Dark Knight",
-      poster: "https://image.tmdb.org/t/p/w500/rOn03xtD6b5l7hB3PRFzFbeO2rB.jpg",
+      image:
+        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQkUywIUXDjHSQJIaNHYVs08osgBpF5Ot-xmB_omyEZeeRP9Xug",
       description:
-        "When the menace known as The Joker emerges from his mysterious past...",
+        "The plot follows the vigilante Batman, police lieutenant James Gordon, and district attorney Harvey Dent, who form an alliance to dismantle organized crime in Gotham City.",
       genre: {
         name: "Action",
         description:
@@ -43,10 +45,10 @@ export const MainView = () => {
     {
       id: 3,
       title: "The Shawshank Redemption",
-      poster:
-        "https://image.tmdb.org/t/p/w500/5b0b8d057773dbf3f2ec88c59710fe66.jpg",
+      image:
+        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRipfEoI8fb4qxidki3e_kp3fr_Kopvoi2yCKcpJGf2ngnKweMR",
       description:
-        "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+        "A banker convicted of uxoricide forms a friendship over a quarter century with a hardened convict, while maintaining his innocence and trying to remain hopeful through simple compassion.",
       genre: {
         name: "Drama",
         description:

@@ -18744,8 +18744,8 @@ const MainView = ()=>{
         {
             id: 1,
             title: "Inception",
-            poster: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
-            description: "A thief who steals corporate secrets through the use of dream-sharing technology...",
+            image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH",
+            description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
             genre: {
                 name: "Sci-Fi",
                 description: "A genre that explores futuristic concepts such as advanced science and technology."
@@ -18760,8 +18760,8 @@ const MainView = ()=>{
         {
             id: 2,
             title: "The Dark Knight",
-            poster: "https://image.tmdb.org/t/p/w500/rOn03xtD6b5l7hB3PRFzFbeO2rB.jpg",
-            description: "When the menace known as The Joker emerges from his mysterious past...",
+            image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQkUywIUXDjHSQJIaNHYVs08osgBpF5Ot-xmB_omyEZeeRP9Xug",
+            description: "The plot follows the vigilante Batman, police lieutenant James Gordon, and district attorney Harvey Dent, who form an alliance to dismantle organized crime in Gotham City.",
             genre: {
                 name: "Action",
                 description: "A genre characterized by high energy, physical activity, and intense scenes."
@@ -18776,8 +18776,8 @@ const MainView = ()=>{
         {
             id: 3,
             title: "The Shawshank Redemption",
-            poster: "https://image.tmdb.org/t/p/w500/5b0b8d057773dbf3f2ec88c59710fe66.jpg",
-            description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+            image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRipfEoI8fb4qxidki3e_kp3fr_Kopvoi2yCKcpJGf2ngnKweMR",
+            description: "A banker convicted of uxoricide forms a friendship over a quarter century with a hardened convict, while maintaining his innocence and trying to remain hopeful through simple compassion.",
             genre: {
                 name: "Drama",
                 description: "A genre that focuses on emotional and interpersonal themes, often exploring human conflict."
@@ -18796,14 +18796,14 @@ const MainView = ()=>{
         onBackClick: ()=>setSelectedMovie(null)
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 68,
+        lineNumber: 70,
         columnNumber: 7
     }, undefined);
     if (movies.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         children: "The list is empty!"
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 76,
+        lineNumber: 78,
         columnNumber: 12
     }, undefined);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -18814,16 +18814,16 @@ const MainView = ()=>{
                 }
             }, movie.id, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 82,
+                lineNumber: 84,
                 columnNumber: 9
             }, undefined))
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 80,
+        lineNumber: 82,
         columnNumber: 5
     }, undefined);
 };
-_s(MainView, "ReB3jDecMD+IZeix3PTgS7l0lh4=");
+_s(MainView, "HoCCZ2XJc/RNpbBEv83/PrgPpak=");
 _c = MainView;
 var _c;
 $RefreshReg$(_c, "MainView");
@@ -18944,23 +18944,29 @@ const MovieView = ({ movie, onBackClick })=>{
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: "Description: "
-                    }, void 0, false, {
-                        fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 12,
-                        columnNumber: 9
-                    }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: movie.description
-                    }, void 0, false, {
-                        fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 13,
-                        columnNumber: 9
-                    }, undefined)
-                ]
-            }, void 0, true, {
+                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                            children: "Description: "
+                        }, void 0, false, {
+                            fileName: "src/components/movie-view/movie-view.jsx",
+                            lineNumber: 13,
+                            columnNumber: 11
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                            children: movie.description
+                        }, void 0, false, {
+                            fileName: "src/components/movie-view/movie-view.jsx",
+                            lineNumber: 14,
+                            columnNumber: 11
+                        }, undefined)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/movie-view/movie-view.jsx",
+                    lineNumber: 12,
+                    columnNumber: 9
+                }, undefined)
+            }, void 0, false, {
                 fileName: "src/components/movie-view/movie-view.jsx",
                 lineNumber: 11,
                 columnNumber: 7
@@ -18968,57 +18974,88 @@ const MovieView = ({ movie, onBackClick })=>{
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: "Genre: "
-                    }, void 0, false, {
+                        children: [
+                            "Genre: ",
+                            movie.genre.name
+                        ]
+                    }, void 0, true, {
                         fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 16,
+                        lineNumber: 18,
                         columnNumber: 9
                     }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: movie.genre
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: movie.genre.description
                     }, void 0, false, {
                         fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 17,
+                        lineNumber: 19,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/movie-view/movie-view.jsx",
-                lineNumber: 15,
+                lineNumber: 17,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: "Director: "
-                    }, void 0, false, {
+                        children: [
+                            "Director: ",
+                            movie.director.name
+                        ]
+                    }, void 0, true, {
                         fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 20,
+                        lineNumber: 22,
                         columnNumber: 9
                     }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                        children: movie.director
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: movie.director.bio
                     }, void 0, false, {
                         fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 21,
+                        lineNumber: 23,
                         columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            "Birth Date: ",
+                            movie.director.birthDate
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/movie-view/movie-view.jsx",
+                        lineNumber: 24,
+                        columnNumber: 9
+                    }, undefined),
+                    movie.director.deathDate && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            "Death Date: ",
+                            movie.director.deathDate
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/movie-view/movie-view.jsx",
+                        lineNumber: 26,
+                        columnNumber: 11
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/movie-view/movie-view.jsx",
-                lineNumber: 19,
+                lineNumber: 21,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                 onClick: onBackClick,
                 style: {
                     marginTop: "20px",
-                    padding: "10px 20px"
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    backgroundColor: "#007BFF",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer"
                 },
                 children: "Back to Movies"
             }, void 0, false, {
                 fileName: "src/components/movie-view/movie-view.jsx",
-                lineNumber: 23,
+                lineNumber: 29,
                 columnNumber: 7
             }, undefined)
         ]
