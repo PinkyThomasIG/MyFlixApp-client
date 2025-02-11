@@ -20,7 +20,12 @@ export const MovieView = ({ movie, onBackClick }) => {
         <span>Director: </span>
         <span>{movie.director}</span>
       </div>
-      <button onClick={onBackClick}>Back</button>
+      <button
+        onClick={onBackClick}
+        style={{ marginTop: "20px", padding: "10px 20px" }}
+      >
+        Back to Movies
+      </button>
     </div>
   );
 };
