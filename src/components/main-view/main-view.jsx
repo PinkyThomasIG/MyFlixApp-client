@@ -1,92 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
 
 export const MainView = () => {
-  const [movies, setMovies] = useState([
-    {
-      id: 1,
-      title: "Inception",
-      image:
-        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH",
-      description:
-        "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
-      genre: {
-        name: "Sci-Fi",
-        description:
-          "A genre that explores futuristic concepts such as advanced science and technology.",
-      },
-      director: {
-        name: "Christopher Nolan",
-        bio: "Christopher Nolan is a British-American film director, producer, and screenwriter.",
-        birthDate: "1970-07-30",
-        deathDate: null, // Director is still alive
-      },
-    },
-    {
-      id: 2,
-      title: "The Dark Knight",
-      image:
-        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQkUywIUXDjHSQJIaNHYVs08osgBpF5Ot-xmB_omyEZeeRP9Xug",
-      description:
-        "The plot follows the vigilante Batman, police lieutenant James Gordon, and district attorney Harvey Dent, who form an alliance to dismantle organized crime in Gotham City.",
-      genre: {
-        name: "Action",
-        description:
-          "A genre characterized by high energy, physical activity, and intense scenes.",
-      },
-      director: {
-        name: "Christopher Nolan",
-        bio: "Christopher Nolan is a British-American film director, producer, and screenwriter.",
-        birthDate: "1970-07-30",
-        deathDate: null, // Director is still alive
-      },
-    },
-    {
-      id: 3,
-      title: "The Shawshank Redemption",
-      image:
-        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRipfEoI8fb4qxidki3e_kp3fr_Kopvoi2yCKcpJGf2ngnKweMR",
-      description:
-        "A banker convicted of uxoricide forms a friendship over a quarter century with a hardened convict, while maintaining his innocence and trying to remain hopeful through simple compassion.",
-      genre: {
-        name: "Drama",
-        description:
-          "A genre that focuses on emotional and interpersonal themes, often exploring human conflict.",
-      },
-      director: {
-        name: "Frank Darabont",
-        bio: "Frank Darabont is a Hungarian-American film director, screenwriter, and producer, best known for adapting Stephen King's works.",
-        birthDate: "1959-01-28",
-        deathDate: null, // Director is still alive
-      },
-    },
-  ]);
-
+  const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isSignup, setIsSignup] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("API Response:", data); // Log the entire response here
+          setMovies(data); // Directly set the array of movies
+        })
+        .catch((error) => console.error("Error fetching movies:", error));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Remove authToken from localStorage
+    localStorage.removeItem("authToken");
+    // Reset user state
+    setUser(null);
+  };
+
+  if (!user) {
+    return (
+      <>
+        {isSignup ? (
+          <SignupView onSignedup={() => setIsSignup(false)} />
+        ) : (
+          <LoginView onLoggedIn={(username) => setUser(username)} />
+        )}
+        <button onClick={() => setIsSignup(!isSignup)}>
+          {isSignup ? "Alread have an account? Log in" : "Sign up"}
+        </button>
+      </>
+    );
+  }
+
+  // If a movie is selected, render the MovieView component
   if (selectedMovie) {
     return (
       <MovieView
         movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)}
+        onBackClick={() => setSelectedMovie(null)} // Go back to the movie list
       />
     );
   }
 
+  // If no movies are fetched, show a "list is empty" message
   if (movies.length === 0) {
     return <div>The list is empty!</div>;
   }
 
+  // Otherwise, map over the movies and render a MovieCard for each
   return (
     <div>
+      {/* Logout Button */}
+      <button onClick={handleLogout}>Logout</button>
+
+      {/* Display Movie Cards */}
       {movies.map((movie) => (
         <MovieCard
-          key={movie.id}
-          movie={movie}
-          onMovieClick={(newSelectedMovie) => {
-            setSelectedMovie(newSelectedMovie); // Update the selected movie
-          }}
+          key={movie._id} // Use _id as the unique key for each movie
+          movie={movie} // Pass the entire movie object to MovieCard
+          onMovieClick={(newSelectedMovie) =>
+            setSelectedMovie(newSelectedMovie)
+          } // Set selected movie on click
         />
       ))}
     </div>
