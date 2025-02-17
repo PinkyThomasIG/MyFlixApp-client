@@ -18817,7 +18817,19 @@ const MovieCard = ({ movie, onMovieClick })=>{
 _c = MovieCard;
 MovieCard.propTypes = {
     movie: (0, _propTypesDefault.default).shape({
-        title: (0, _propTypesDefault.default).string.isRequired
+        _id: (0, _propTypesDefault.default).string.isRequired,
+        title: (0, _propTypesDefault.default).string.isRequired,
+        description: (0, _propTypesDefault.default).string,
+        director: (0, _propTypesDefault.default).shape({
+            bio: (0, _propTypesDefault.default).string,
+            birthDate: (0, _propTypesDefault.default).string,
+            deathDate: (0, _propTypesDefault.default).string,
+            name: (0, _propTypesDefault.default).string
+        }),
+        genre: (0, _propTypesDefault.default).shape({
+            description: (0, _propTypesDefault.default).string,
+            name: (0, _propTypesDefault.default).string
+        })
     }).isRequired,
     onMovieClick: (0, _propTypesDefault.default).func.isRequired
 };
