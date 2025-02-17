@@ -19851,9 +19851,11 @@ const LoginView = ({ onLoggedIn })=>{
     _s();
     const [username, setUsername] = (0, _react.useState)("");
     const [password, setPassword] = (0, _react.useState)("");
+    const [error, setError] = (0, _react.useState)(""); // to display error messages
     const handleSubmit = (event)=>{
         // this prevents the default behavior of the form which is to reload the entire page
         event.preventDefault();
+        if (!username || !password) setError("both fields are required");
         const data = {
             access: username,
             secret: password
@@ -19862,8 +19864,13 @@ const LoginView = ({ onLoggedIn })=>{
             method: "POST",
             body: JSON.stringify(data)
         }).then((response)=>{
-            if (response.ok) onLoggedIn(username);
-            else alert("Login failed");
+            if (response.ok) return response.json();
+            else throw new Error("Login failed");
+        }).then((data)=>{
+            localStorage.setItem("authToken", data.token); // Store the token in localStorage
+            onLoggedIn(username); // Call the callback to update UI after successful login
+        }).catch((error)=>{
+            setError(error.message); // Set error if login fails
         });
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
@@ -19875,16 +19882,17 @@ const LoginView = ({ onLoggedIn })=>{
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
                         type: "text",
                         value: username,
-                        onChange: (e)=>setUsername(e.target.value)
+                        onChange: (e)=>setUsername(e.target.value),
+                        required: true
                     }, void 0, false, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 32,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 30,
+                lineNumber: 43,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
@@ -19893,16 +19901,17 @@ const LoginView = ({ onLoggedIn })=>{
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
                         type: "password",
                         value: password,
-                        onChange: (e)=>setPassword(e.target.value)
+                        onChange: (e)=>setPassword(e.target.value),
+                        required: true
                     }, void 0, false, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 40,
+                        lineNumber: 54,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 38,
+                lineNumber: 52,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -19910,17 +19919,17 @@ const LoginView = ({ onLoggedIn })=>{
                 children: "Submit"
             }, void 0, false, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 46,
+                lineNumber: 61,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/login-view/login-view.jsx",
-        lineNumber: 29,
+        lineNumber: 42,
         columnNumber: 5
     }, undefined);
 };
-_s(LoginView, "Lrw7JeD9zj6OUWhT/IH4OIvPKEk=");
+_s(LoginView, "4jNknrOuvZJHDfLk30xz3DpS4Uw=");
 _c = LoginView;
 var _c;
 $RefreshReg$(_c, "LoginView");
