@@ -12,8 +12,13 @@ export const MainView = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data); // Debugging step
+        const moviesFromApi = Array.isArray(data.movie) ? data.movie : [];
+        setMovies(moviesFromApi);
+      })
+      .catch((error) => console.error("Error fetching movies:", error));
+  }, []);
 
-        if (!data || !data.movie) {
+  /* if (!data || !data.movie) {
           console.error("Unexpected API response structure");
           return;
         }
@@ -29,7 +34,7 @@ export const MainView = () => {
         setMovies(moviesFromApi);
       })
       .catch((error) => console.error("Error fetching movies:", error));
-  }, []);
+  }, []); */
 
   /* useEffect(() => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")

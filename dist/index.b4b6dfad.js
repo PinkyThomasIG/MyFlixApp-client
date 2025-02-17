@@ -18745,21 +18745,27 @@ const MainView = ()=>{
     (0, _react.useEffect)(()=>{
         fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies").then((response)=>response.json()).then((data)=>{
             console.log("API Response:", data); // Debugging step
-            if (!data || !data.movie) {
-                console.error("Unexpected API response structure");
-                return;
-            }
-            const moviesFromApi = data.movie.map((movie)=>({
-                    id: movie._id,
-                    title: movie.title,
-                    description: movie.description || "No description available.",
-                    director: movie.director || {},
-                    genre: movie.genre || {}
-                }));
+            const moviesFromApi = Array.isArray(data.movie) ? data.movie : [];
             setMovies(moviesFromApi);
         }).catch((error)=>console.error("Error fetching movies:", error));
     }, []);
-    /* useEffect(() => {
+    /* if (!data || !data.movie) {
+          console.error("Unexpected API response structure");
+          return;
+        }
+
+        const moviesFromApi = data.movie.map((movie) => ({
+          id: movie._id,
+          title: movie.title,
+          description: movie.description || "No description available.",
+          director: movie.director || {}, // Handle missing director
+          genre: movie.genre || {}, // Handle missing genre
+        }));
+
+        setMovies(moviesFromApi);
+      })
+      .catch((error) => console.error("Error fetching movies:", error));
+  }, []); */ /* useEffect(() => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
       .then((response) => response.json())
       .then((data) => {
@@ -18787,14 +18793,14 @@ const MainView = ()=>{
         onBackClick: ()=>setSelectedMovie(null)
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 63,
+        lineNumber: 68,
         columnNumber: 7
     }, undefined);
     if (movies.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         children: "The list is empty!"
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 71,
+        lineNumber: 76,
         columnNumber: 12
     }, undefined);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -18805,12 +18811,12 @@ const MainView = ()=>{
                 }
             }, movie.id, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 77,
+                lineNumber: 82,
                 columnNumber: 9
             }, undefined))
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 75,
+        lineNumber: 80,
         columnNumber: 5
     }, undefined);
 };
