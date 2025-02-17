@@ -18745,7 +18745,7 @@ const MainView = ()=>{
     const [movies, setMovies] = (0, _react.useState)([]);
     const [selectedMovie, setSelectedMovie] = (0, _react.useState)(null);
     const [user, setUser] = (0, _react.useState)(null);
-    const [isSignup, setIsSignup] = usestate(false);
+    const [isSignup, setIsSignup] = (0, _react.useState)(false);
     (0, _react.useEffect)(()=>{
         fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies").then((response)=>response.json()).then((data)=>{
             console.log("API Response:", data); // Log the entire response here
@@ -18810,7 +18810,7 @@ const MainView = ()=>{
         columnNumber: 5
     }, undefined);
 };
-_s(MainView, "AA2Lbd5vppiQn5Rpxq/geFPiCys=");
+_s(MainView, "ZlACISAENvdRxF1WeQ4xasdTm0M=");
 _c = MainView;
 var _c;
 $RefreshReg$(_c, "MainView");
