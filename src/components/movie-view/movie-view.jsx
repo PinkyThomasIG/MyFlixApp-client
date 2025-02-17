@@ -1,9 +1,7 @@
+import PropTypes from "prop-types";
 export const MovieView = ({ movie, onBackClick }) => {
   return (
     <div>
-      <div>
-        <img src={movie.image} alt={movie.title} />
-      </div>
       <div>
         <span>Title: </span>
         <span>{movie.title}</span>
@@ -15,14 +13,14 @@ export const MovieView = ({ movie, onBackClick }) => {
         </p>
       </div>
       <div>
-        <span>Genre: {movie.genre.name}</span>
-        <p>{movie.genre.description}</p>
+        <span>Genre: {movie.genre?.name}</span>
+        <p>{movie.genre?.description}</p>
       </div>
       <div>
-        <span>Director: {movie.director.name}</span>
-        <p>{movie.director.bio}</p>
-        <p>Birth Date: {movie.director.birthDate}</p>
-        {movie.director.deathDate && (
+        <span>Director: {movie.director?.name}</span>
+        <p>{movie.director?.bio}</p>
+        <p>Birth Date: {movie.director?.birthDate}</p>
+        {movie.director?.deathDate && (
           <p>Death Date: {movie.director.deathDate}</p>
         )}
       </div>
@@ -42,4 +40,22 @@ export const MovieView = ({ movie, onBackClick }) => {
       </button>
     </div>
   );
+};
+
+MovieView.propTypes = {
+  movie: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    genre: PropTypes.shape({
+      name: PropTypes.string,
+      description: PropTypes.string,
+    }),
+    director: PropTypes.shape({
+      name: PropTypes.string,
+      bio: PropTypes.string,
+      birthDate: PropTypes.string,
+      deathDate: PropTypes.string,
+    }),
+  }).isRequired,
+  onBackClick: PropTypes.func.isRequired,
 };
