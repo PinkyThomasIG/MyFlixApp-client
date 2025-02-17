@@ -18747,24 +18747,31 @@ const MainView = ()=>{
     const [user, setUser] = (0, _react.useState)(null);
     const [isSignup, setIsSignup] = (0, _react.useState)(false);
     (0, _react.useEffect)(()=>{
-        fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies").then((response)=>response.json()).then((data)=>{
+        const token = localStorage.getItem("authToken");
+        if (token) fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies").then((response)=>response.json()).then((data)=>{
             console.log("API Response:", data); // Log the entire response here
             setMovies(data); // Directly set the array of movies
         }).catch((error)=>console.error("Error fetching movies:", error));
     }, []);
+    const handleLogout = ()=>{
+        // Remove authToken from localStorage
+        localStorage.removeItem("authToken");
+        // Reset user state
+        setUser(null);
+    };
     if (!user) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
         children: [
             isSignup ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _signupView.SignupView), {
                 onSignedup: ()=>setIsSignup(false)
             }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 27,
+                lineNumber: 37,
                 columnNumber: 11
-            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("loginView", {
-                OnLoggedIn: (user)=>setUser(user)
+            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _loginView.LoginView), {
+                onLoggedIn: (username)=>setUser(username)
             }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 29,
+                lineNumber: 39,
                 columnNumber: 11
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -18772,7 +18779,7 @@ const MainView = ()=>{
                 children: isSignup ? "Alread have an account? Log in" : "Sign up"
             }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 31,
+                lineNumber: 41,
                 columnNumber: 9
             }, undefined)
         ]
@@ -18783,7 +18790,7 @@ const MainView = ()=>{
         onBackClick: ()=>setSelectedMovie(null)
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 41,
+        lineNumber: 51,
         columnNumber: 7
     }, undefined);
     // If no movies are fetched, show a "list is empty" message
@@ -18791,22 +18798,32 @@ const MainView = ()=>{
         children: "The list is empty!"
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 50,
+        lineNumber: 60,
         columnNumber: 12
     }, undefined);
     // Otherwise, map over the movies and render a MovieCard for each
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        children: movies.map((movie)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _movieCard.MovieCard), {
-                movie: movie,
-                onMovieClick: (newSelectedMovie)=>setSelectedMovie(newSelectedMovie)
-            }, movie._id, false, {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                onClick: handleLogout,
+                children: "Logout"
+            }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 57,
-                columnNumber: 9
-            }, undefined))
-    }, void 0, false, {
+                lineNumber: 67,
+                columnNumber: 7
+            }, undefined),
+            movies.map((movie)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _movieCard.MovieCard), {
+                    movie: movie,
+                    onMovieClick: (newSelectedMovie)=>setSelectedMovie(newSelectedMovie)
+                }, movie._id, false, {
+                    fileName: "src/components/main-view/main-view.jsx",
+                    lineNumber: 71,
+                    columnNumber: 9
+                }, undefined))
+        ]
+    }, void 0, true, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 55,
+        lineNumber: 65,
         columnNumber: 5
     }, undefined);
 };

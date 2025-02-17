@@ -11,14 +11,24 @@ export const MainView = () => {
   const [isSignup, setIsSignup] = useState(false);
 
   useEffect(() => {
-    fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API Response:", data); // Log the entire response here
-        setMovies(data); // Directly set the array of movies
-      })
-      .catch((error) => console.error("Error fetching movies:", error));
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("API Response:", data); // Log the entire response here
+          setMovies(data); // Directly set the array of movies
+        })
+        .catch((error) => console.error("Error fetching movies:", error));
+    }
   }, []);
+
+  const handleLogout = () => {
+    // Remove authToken from localStorage
+    localStorage.removeItem("authToken");
+    // Reset user state
+    setUser(null);
+  };
 
   if (!user) {
     return (
@@ -26,7 +36,7 @@ export const MainView = () => {
         {isSignup ? (
           <SignupView onSignedup={() => setIsSignup(false)} />
         ) : (
-          <loginView OnLoggedIn={(user) => setUser(user)} />
+          <LoginView onLoggedIn={(username) => setUser(username)} />
         )}
         <button onClick={() => setIsSignup(!isSignup)}>
           {isSignup ? "Alread have an account? Log in" : "Sign up"}
@@ -53,6 +63,10 @@ export const MainView = () => {
   // Otherwise, map over the movies and render a MovieCard for each
   return (
     <div>
+      {/* Logout Button */}
+      <button onClick={handleLogout}>Logout</button>
+
+      {/* Display Movie Cards */}
       {movies.map((movie) => (
         <MovieCard
           key={movie._id} // Use _id as the unique key for each movie
