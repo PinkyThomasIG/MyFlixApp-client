@@ -11,6 +11,30 @@ export const MainView = () => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
       .then((response) => response.json())
       .then((data) => {
+        console.log("API Response:", data); // Debugging step
+
+        if (!data || !data.movie) {
+          console.error("Unexpected API response structure");
+          return;
+        }
+
+        const moviesFromApi = data.movie.map((movie) => ({
+          id: movie._id,
+          title: movie.title,
+          description: movie.description || "No description available.",
+          director: movie.director || {}, // Handle missing director
+          genre: movie.genre || {}, // Handle missing genre
+        }));
+
+        setMovies(moviesFromApi);
+      })
+      .catch((error) => console.error("Error fetching movies:", error));
+  }, []);
+
+  /* useEffect(() => {
+    fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
+      .then((response) => response.json())
+      .then((data) => {
         const moviesFromApi = data.movie.map((movie) => ({
           id: movie._id,
           title: movie.title,
@@ -21,7 +45,7 @@ export const MainView = () => {
 
         setMovies(moviesFromApi);
       });
-  }, []);
+  }, []); */
 
   /* .then((response) => response.json())
       .then((data) => {
