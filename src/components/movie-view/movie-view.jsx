@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+
 export const MovieView = ({ movie, onBackClick }) => {
   return (
     <div>
@@ -45,7 +46,7 @@ export const MovieView = ({ movie, onBackClick }) => {
   );
 };
 
-MovieCard.propTypes = {
+MovieView.propTypes = {
   movie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
@@ -61,5 +62,5 @@ MovieCard.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired,
+  onBackClick: PropTypes.func.isRequired,
 };
