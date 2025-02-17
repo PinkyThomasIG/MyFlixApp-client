@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
+  const [isSignup, setIsSignup] = usestate(false);
 
   useEffect(() => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
@@ -19,7 +21,18 @@ export const MainView = () => {
   }, []);
 
   if (!user) {
-    return <LoginView />;
+    return (
+      <>
+        {isSignup ? (
+          <SignupView onSignedup={() => setIsSignup(false)} />
+        ) : (
+          <loginView OnLoggedIn={(user) => setUser(user)} />
+        )}
+        <button onClick={() => setIsSignup(!isSignup)}>
+          {isSignup ? "Alread have an account? Log in" : "Sign up"}
+        </button>
+      </>
+    );
   }
 
   // If a movie is selected, render the MovieView component
