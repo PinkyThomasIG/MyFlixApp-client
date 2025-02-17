@@ -6,7 +6,7 @@ import { LoginView } from "../login-view/login-view";
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
