@@ -6,6 +6,7 @@ export const LoginView = () => {
         <input type="text" />
       </label>
       <label>
+        Password:
         <input type="text" />
       </label>
       <button type="submit">Submit</button>
