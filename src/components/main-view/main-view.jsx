@@ -19,7 +19,7 @@ export const MainView = () => {
   }, []);
 
   if (!user) {
-    return <LoginView />;
+    return <LoginView onLoggedIn={(user) => setUser(user)} />;
   }
 
   // If a movie is selected, render the MovieView component

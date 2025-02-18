@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-export const LoginView = () => {
+export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,6 +17,12 @@ export const LoginView = () => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/login", {
       method: "POST",
       bodx: JSON.stringify(data),
+    }).then((response) => {
+      if (response.ok) {
+        onLoggedIn(username);
+      } else {
+        alert("Login Failed");
+      }
     });
   };
   return (
@@ -27,6 +33,7 @@ export const LoginView = () => {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
       </label>
       <label>
@@ -35,6 +42,7 @@ export const LoginView = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
       </label>
       <button type="submit">Submit</button>
