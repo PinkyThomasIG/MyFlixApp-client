@@ -16,14 +16,24 @@ export const LoginView = ({ onLoggedIn }) => {
 
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/login", {
       method: "POST",
-      bodx: JSON.stringify(data),
-    }).then((response) => {
-      if (response.ok) {
-        onLoggedIn(username);
-      } else {
-        alert("Login Failed");
-      }
-    });
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Login response: ", data);
+        if (data.user && data.token) {
+          localStorage.setItem("authToken", data.token);
+          onLoggedIn(data.user, data.token);
+        } else {
+          alert("No such user");
+        }
+      })
+      .catch(() => {
+        alert("Something went wrong");
+      });
   };
   return (
     <form onSubmit={handleSubmit}>
