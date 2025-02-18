@@ -32,6 +32,7 @@ export const SignupView = ({ onSignedUp }) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Signup response: ", data);
         if (data.user) {
           // On successful sign-up, pass user data to the parent component (MainView)
           onSignedUp(data.user);

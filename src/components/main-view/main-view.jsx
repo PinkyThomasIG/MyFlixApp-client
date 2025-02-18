@@ -41,12 +41,15 @@ export const MainView = () => {
         }}
       />
     ) : (
-      <LoginView
-        onLoggedIn={(user, token) => {
-          setUser(user);
-          setToken(token);
-        }}
-      />
+      <div>
+        <LoginView
+          onLoggedIn={(user, token) => {
+            setUser(user);
+            setToken(token);
+          }}
+        />
+        <button onClick={() => setIsSigningUp(true)}>Sign Up</button>
+      </div>
     );
   }
 
