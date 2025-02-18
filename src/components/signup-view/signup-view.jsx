@@ -5,6 +5,7 @@ export const SignupView = ({ onSignedUp }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [error, setError] = useState(null);
 
   const handleSubmit = (event) => {
@@ -84,6 +85,15 @@ export const SignupView = ({ onSignedUp }) => {
             type="password"
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Birthday:
+          <input
+            type="date"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
             required
           />
         </label>
