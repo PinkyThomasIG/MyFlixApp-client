@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies")
@@ -15,6 +17,10 @@ export const MainView = () => {
       })
       .catch((error) => console.error("Error fetching movies:", error));
   }, []);
+
+  if (!user) {
+    return <LoginView />;
+  }
 
   // If a movie is selected, render the MovieView component
   if (selectedMovie) {
