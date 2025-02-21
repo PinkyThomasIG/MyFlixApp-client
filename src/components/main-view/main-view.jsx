@@ -98,8 +98,10 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
-
-import { Row, Col, Button, Container } from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
@@ -108,22 +110,54 @@ export const MainView = () => {
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
 
+  // Fetch the token from localStorage and check its validity
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
-    if (storedToken) setToken(storedToken);
+    if (storedToken) {
+      console.log("Stored Token:", storedToken); // Debugging token retrieval
+      setToken(storedToken);
+    }
   }, []);
 
+  // Fetch movies if a valid token is available
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      console.log("No token available, cannot fetch movies.");
+      return;
+    }
+
+    console.log("Fetching movies with token:", token); // Debugging API request
 
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
-      .then((data) => setMovies(data))
-      .catch((error) => console.error("Error fetching movies: ", error));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch movies");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Movies fetched:", data); // Debugging API response
+        if (Array.isArray(data) && data.length > 0) {
+          setMovies(data);
+        } else {
+          console.log("No movies available or invalid response");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error); // Debugging error
+      });
   }, [token]);
 
+  // Handle logout
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("authToken");
+  };
+
+  // Render the appropriate view depending on the state
   if (!user) {
     return (
       <Container className="text-center mt-5">
@@ -151,12 +185,7 @@ export const MainView = () => {
     );
   }
 
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("authToken");
-  };
-
+  // If a movie is selected, show the MovieView
   if (selectedMovie) {
     return (
       <Container className="mt-4">
@@ -168,7 +197,9 @@ export const MainView = () => {
     );
   }
 
+  // If no movies, show an empty message
   if (movies.length === 0) {
+    console.log("No movies to display"); // Debugging empty state
     return (
       <Container className="text-center mt-5">
         <h4>No movies available</h4>
@@ -186,17 +217,25 @@ export const MainView = () => {
       </div>
 
       {/* Movie Grid */}
-      <Row className="justify-content-center">
-        {movies.map((movie) => (
-          <Col key={movie._id} lg={3} md={4} sm={6} xs={12} className="mb-4">
-            <MovieCard
-              movie={movie}
-              onMovieClick={(newSelectedMovie) =>
-                setSelectedMovie(newSelectedMovie)
-              }
-            />
-          </Col>
-        ))}
+      <Row className="justify-content-center g-4">
+        {movies.map((movie, index) => {
+          // Ensuring that the movie data is valid and not null or undefined
+          if (!movie || !movie._id || !movie.title) {
+            console.log(`Skipping invalid movie at index ${index}`);
+            return null; // Skip this movie if it's invalid
+          }
+
+          return (
+            <Col key={movie._id} md={3} sm={6} xs={12} className="mb-4">
+              <MovieCard
+                movie={movie}
+                onMovieClick={(newSelectedMovie) =>
+                  setSelectedMovie(newSelectedMovie)
+                }
+              />
+            </Col>
+          );
+        })}
       </Row>
     </Container>
   );
