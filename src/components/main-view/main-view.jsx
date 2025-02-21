@@ -1,23 +1,23 @@
-// main-view.jsx
-import { useState, useEffect } from "react";
-import { Link, BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
-import { ProfileView } from "../profile-view/profile-view"; // Add ProfileView import
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import { NavigationBar } from "../navigation-bar/navigation-bar"; // Import NavigationBar component
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ProfileView } from "../profile-view/profile-view"; // Import ProfileView
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
-  // Fetch token from localStorage and fetch movies
+  // Fetch movies when the token is available
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
@@ -33,83 +33,99 @@ export const MainView = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Movies fetched:", data); // Check the data
         setMovies(data);
       })
       .catch((error) => console.error("Error fetching movies: ", error));
   }, [token]);
 
+  // Handle logout
   const handleLogout = () => {
     setUser(null);
     setToken(null);
-    localStorage.clear(); // Clear token from localStorage
+    localStorage.removeItem("authToken");
   };
 
-  return (
-    <BrowserRouter>
-      <Container>
-        {/* Navigation Bar */}
-        <NavigationBar user={user} onLoggedOut={handleLogout} />
-
-        {/* Routes for Pages */}
-        <Routes>
-          <Route
-            path="/movies/:movieId"
-            element={<MovieView movies={movies} />}
+  // Render the appropriate view depending on the state
+  if (!user) {
+    return (
+      <Container className="text-center mt-5">
+        {isSigningUp ? (
+          <SignupView
+            onSignedUp={(user) => {
+              setUser(user);
+              setIsSigningUp(false);
+            }}
           />
-          <Route
-            path="/"
-            element={
-              !user ? (
-                <Navigate to="/login" />
-              ) : (
-                <Row className="justify-content-center g-4">
-                  {movies.map((movie) => (
-                    <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
-                      <MovieCard movie={movie} />
-                    </Col>
-                  ))}
-                </Row>
-              )
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              !user ? (
-                <LoginView
-                  onLoggedIn={(user, token) => {
-                    setUser(user);
-                    setToken(token);
-                  }}
-                />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              !user ? (
-                <SignupView
-                  onSignedUp={(user) => {
-                    setUser(user);
-                    setIsSigningUp(false);
-                  }}
-                />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              !user ? <Navigate to="/login" /> : <ProfileView user={user} />
-            }
-          />
-        </Routes>
+        ) : (
+          <>
+            <LoginView
+              onLoggedIn={(user, token) => {
+                setUser(user);
+                setToken(token);
+              }}
+            />
+            <Button variant="link" onClick={() => setIsSigningUp(true)}>
+              Sign Up
+            </Button>
+          </>
+        )}
       </Container>
-    </BrowserRouter>
+    );
+  }
+
+  return (
+    <Router>
+      <NavigationBar user={user} onLoggedOut={handleLogout} />
+
+      <Routes>
+        {/* Home Page Route (Movie Grid) */}
+        <Route
+          path="/"
+          element={
+            <Container className="mt-4">
+              {/* Logout Button */}
+              <div className="d-flex justify-content-end">
+                <Button variant="danger" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </div>
+
+              {/* Movie Grid */}
+              <Row className="justify-content-center g-4">
+                {movies.map((movie) => (
+                  <Col
+                    key={movie._id}
+                    md={4} // Sets the grid to display 3 movies per row
+                    sm={6} // On smaller screens, show 2 movies per row
+                    xs={12} // On extra small screens, show 1 movie per row
+                    className="mb-4"
+                  >
+                    <MovieCard movie={movie} />
+                  </Col>
+                ))}
+              </Row>
+            </Container>
+          }
+        />
+        {/* Profile Page Route */}
+        <Route
+          path="/profile"
+          element={
+            <ProfileView
+              user={user}
+              token={token}
+              movies={movies}
+              onDeregister={() => setUser(null)}
+            />
+          }
+        />
+        {/* Movie Details Route */}
+        <Route
+          path="/movies/:movieId"
+          element={<MovieView movies={movies} />}
+        />
+      </Routes>
+    </Router>
   );
 };
