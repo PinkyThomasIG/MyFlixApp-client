@@ -1,63 +1,19 @@
-import PropTypes from "prop-types";
+import { useParams, Link } from "react-router-dom";
 
-export const MovieView = ({ movie, onBackClick }) => {
+export const MovieView = ({ movies }) => {
+  const { movieId } = useParams();
+  const movie = movies.find((m) => m._id === movieId);
+
+  if (!movie) {
+    return <h4>Movie not found</h4>;
+  }
+
   return (
     <div>
-      <div>
-        <span>Title: </span>
-        <span>{movie.title}</span>
-      </div>
-      <div>
-        <p>
-          <span>Description: </span>
-          <span>{movie.description}</span>
-        </p>
-      </div>
-      <div>
-        <span>Genre: {movie.genre.name}</span>
-        <p>{movie.genre.description}</p>
-      </div>
-      <div>
-        <span>Director: {movie.director.name}</span>
-        <p>{movie.director.bio}</p>
-        <p>Birth Date: {movie.director.birthDate}</p>
-        {movie.director.deathDate && (
-          <p>Death Date: {movie.director.deathDate}</p>
-        )}
-      </div>
-      <button
-        onClick={onBackClick}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: "#007BFF",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Back to Movies
-      </button>
+      <h2>{movie.title}</h2>
+      <p>{movie.description}</p>
+      <p>Director: {movie.director?.name}</p>
+      <Link to="/">Back to Movie List</Link>
     </div>
   );
-};
-
-MovieView.propTypes = {
-  movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    director: PropTypes.shape({
-      bio: PropTypes.string,
-      birthDate: PropTypes.string,
-      deathDate: PropTypes.string,
-      name: PropTypes.string,
-    }),
-    genre: PropTypes.shape({
-      description: PropTypes.string,
-      name: PropTypes.string,
-    }),
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
 };
