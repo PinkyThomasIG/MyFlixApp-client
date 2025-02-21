@@ -110,44 +110,26 @@ export const MainView = () => {
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
 
-  // Fetch the token from localStorage and check its validity
+  // Fetch movies when the token is available
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
-      console.log("Stored Token:", storedToken); // Debugging token retrieval
       setToken(storedToken);
     }
   }, []);
 
-  // Fetch movies if a valid token is available
   useEffect(() => {
-    if (!token) {
-      console.log("No token available, cannot fetch movies.");
-      return;
-    }
-
-    console.log("Fetching movies with token:", token); // Debugging API request
+    if (!token) return;
 
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch movies");
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        console.log("Movies fetched:", data); // Debugging API response
-        if (Array.isArray(data) && data.length > 0) {
-          setMovies(data);
-        } else {
-          console.log("No movies available or invalid response");
-        }
+        console.log("Movies fetched:", data); // Check the data
+        setMovies(data);
       })
-      .catch((error) => {
-        console.error("Error fetching movies:", error); // Debugging error
-      });
+      .catch((error) => console.error("Error fetching movies: ", error));
   }, [token]);
 
   // Handle logout
@@ -199,7 +181,6 @@ export const MainView = () => {
 
   // If no movies, show an empty message
   if (movies.length === 0) {
-    console.log("No movies to display"); // Debugging empty state
     return (
       <Container className="text-center mt-5">
         <h4>No movies available</h4>
@@ -218,24 +199,22 @@ export const MainView = () => {
 
       {/* Movie Grid */}
       <Row className="justify-content-center g-4">
-        {movies.map((movie, index) => {
-          // Ensuring that the movie data is valid and not null or undefined
-          if (!movie || !movie._id || !movie.title) {
-            console.log(`Skipping invalid movie at index ${index}`);
-            return null; // Skip this movie if it's invalid
-          }
-
-          return (
-            <Col key={movie._id} md={3} sm={6} xs={12} className="mb-4">
-              <MovieCard
-                movie={movie}
-                onMovieClick={(newSelectedMovie) =>
-                  setSelectedMovie(newSelectedMovie)
-                }
-              />
-            </Col>
-          );
-        })}
+        {movies.map((movie, index) => (
+          <Col
+            key={movie._id}
+            md={4} // Sets the grid to display 3 movies per row
+            sm={6} // On smaller screens, show 2 movies per row
+            xs={12} // On extra small screens, show 1 movie per row
+            className="mb-4"
+          >
+            <MovieCard
+              movie={movie}
+              onMovieClick={(newSelectedMovie) =>
+                setSelectedMovie(newSelectedMovie)
+              }
+            />
+          </Col>
+        ))}
       </Row>
     </Container>
   );
