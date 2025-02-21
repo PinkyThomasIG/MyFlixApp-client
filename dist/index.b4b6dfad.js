@@ -18873,35 +18873,21 @@ const MainView = ()=>{
     const [user, setUser] = (0, _react.useState)(null);
     const [token, setToken] = (0, _react.useState)(null);
     const [isSigningUp, setIsSigningUp] = (0, _react.useState)(false);
-    // Fetch the token from localStorage and check its validity
+    // Fetch movies when the token is available
     (0, _react.useEffect)(()=>{
         const storedToken = localStorage.getItem("authToken");
-        if (storedToken) {
-            console.log("Stored Token:", storedToken); // Debugging token retrieval
-            setToken(storedToken);
-        }
+        if (storedToken) setToken(storedToken);
     }, []);
-    // Fetch movies if a valid token is available
     (0, _react.useEffect)(()=>{
-        if (!token) {
-            console.log("No token available, cannot fetch movies.");
-            return;
-        }
-        console.log("Fetching movies with token:", token); // Debugging API request
+        if (!token) return;
         fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }).then((response)=>{
-            if (!response.ok) throw new Error("Failed to fetch movies");
-            return response.json();
-        }).then((data)=>{
-            console.log("Movies fetched:", data); // Debugging API response
-            if (Array.isArray(data) && data.length > 0) setMovies(data);
-            else console.log("No movies available or invalid response");
-        }).catch((error)=>{
-            console.error("Error fetching movies:", error); // Debugging error
-        });
+        }).then((response)=>response.json()).then((data)=>{
+            console.log("Movies fetched:", data); // Check the data
+            setMovies(data);
+        }).catch((error)=>console.error("Error fetching movies: ", error));
     }, [
         token
     ]);
@@ -18921,7 +18907,7 @@ const MainView = ()=>{
             }
         }, void 0, false, {
             fileName: "src/components/main-view/main-view.jsx",
-            lineNumber: 165,
+            lineNumber: 147,
             columnNumber: 11
         }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
             children: [
@@ -18932,7 +18918,7 @@ const MainView = ()=>{
                     }
                 }, void 0, false, {
                     fileName: "src/components/main-view/main-view.jsx",
-                    lineNumber: 173,
+                    lineNumber: 155,
                     columnNumber: 13
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _buttonDefault.default), {
@@ -18941,14 +18927,14 @@ const MainView = ()=>{
                     children: "Sign Up"
                 }, void 0, false, {
                     fileName: "src/components/main-view/main-view.jsx",
-                    lineNumber: 179,
+                    lineNumber: 161,
                     columnNumber: 13
                 }, undefined)
             ]
         }, void 0, true)
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 163,
+        lineNumber: 145,
         columnNumber: 7
     }, undefined);
     // If a movie is selected, show the MovieView
@@ -18959,32 +18945,29 @@ const MainView = ()=>{
             onBackClick: ()=>setSelectedMovie(null)
         }, void 0, false, {
             fileName: "src/components/main-view/main-view.jsx",
-            lineNumber: 192,
+            lineNumber: 174,
             columnNumber: 9
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 191,
+        lineNumber: 173,
         columnNumber: 7
     }, undefined);
     // If no movies, show an empty message
-    if (movies.length === 0) {
-        console.log("No movies to display"); // Debugging empty state
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _containerDefault.default), {
-            className: "text-center mt-5",
-            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h4", {
-                children: "No movies available"
-            }, void 0, false, {
-                fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 205,
-                columnNumber: 9
-            }, undefined)
+    if (movies.length === 0) return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _containerDefault.default), {
+        className: "text-center mt-5",
+        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h4", {
+            children: "No movies available"
         }, void 0, false, {
             fileName: "src/components/main-view/main-view.jsx",
-            lineNumber: 204,
-            columnNumber: 7
-        }, undefined);
-    }
+            lineNumber: 186,
+            columnNumber: 9
+        }, undefined)
+    }, void 0, false, {
+        fileName: "src/components/main-view/main-view.jsx",
+        lineNumber: 185,
+        columnNumber: 7
+    }, undefined);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _containerDefault.default), {
         className: "mt-4",
         children: [
@@ -18996,24 +18979,18 @@ const MainView = ()=>{
                     children: "Logout"
                 }, void 0, false, {
                     fileName: "src/components/main-view/main-view.jsx",
-                    lineNumber: 214,
+                    lineNumber: 195,
                     columnNumber: 9
                 }, undefined)
             }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 213,
+                lineNumber: 194,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _rowDefault.default), {
                 className: "justify-content-center g-4",
-                children: movies.map((movie, index)=>{
-                    // Ensuring that the movie data is valid and not null or undefined
-                    if (!movie || !movie._id || !movie.title) {
-                        console.log(`Skipping invalid movie at index ${index}`);
-                        return null; // Skip this movie if it's invalid
-                    }
-                    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _colDefault.default), {
-                        md: 3,
+                children: movies.map((movie, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _colDefault.default), {
+                        md: 4,
                         sm: 6,
                         xs: 12,
                         className: "mb-4",
@@ -19022,24 +18999,23 @@ const MainView = ()=>{
                             onMovieClick: (newSelectedMovie)=>setSelectedMovie(newSelectedMovie)
                         }, void 0, false, {
                             fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 230,
-                            columnNumber: 15
+                            lineNumber: 210,
+                            columnNumber: 13
                         }, undefined)
                     }, movie._id, false, {
                         fileName: "src/components/main-view/main-view.jsx",
-                        lineNumber: 229,
-                        columnNumber: 13
-                    }, undefined);
-                })
+                        lineNumber: 203,
+                        columnNumber: 11
+                    }, undefined))
             }, void 0, false, {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 220,
+                lineNumber: 201,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/main-view/main-view.jsx",
-        lineNumber: 211,
+        lineNumber: 192,
         columnNumber: 5
     }, undefined);
 };
