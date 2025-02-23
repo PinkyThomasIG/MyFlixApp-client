@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({ movie, isFavorite, onToggleFavorite }) => {
   if (!movie || !movie.title) return null;
 
   return (
@@ -13,10 +13,15 @@ export const MovieCard = ({ movie }) => {
         <Card.Text>{movie.description}</Card.Text>
 
         <div className="d-flex justify-content-between">
-          {/* Link to movie details page */}
           <Link to={`/movies/${movie._id}`}>
             <Button variant="primary">View Details</Button>
           </Link>
+          <Button
+            variant={isFavorite ? "danger" : "outline-primary"}
+            onClick={() => onToggleFavorite(movie._id)}
+          >
+            {isFavorite ? "Unfavorite" : "Favorite"}
+          </Button>
         </div>
       </Card.Body>
     </Card>
@@ -29,4 +34,6 @@ MovieCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
   }).isRequired,
+  isFavorite: PropTypes.bool.isRequired,
+  onToggleFavorite: PropTypes.func.isRequired,
 };

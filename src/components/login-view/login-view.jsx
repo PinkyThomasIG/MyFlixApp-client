@@ -1,66 +1,3 @@
-/* import React from "react";
-import { useState } from "react";
-
-export const LoginView = ({ onLoggedIn }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (event) => {
-    // this prevents the default behavior of the form which is to reload the entire page
-    event.preventDefault();
-
-    const data = {
-      // access: username,
-      // secret: password,
-      Username: username,
-      Password: password,
-    };
-
-    fetch("https://movieflix-application-717006838e7d.herokuapp.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Login response: ", data);
-        if (data.user && data.token) {
-          localStorage.setItem("authToken", data.token);
-          onLoggedIn(data.user, data.token);
-        } else {
-          alert("No such user");
-        }
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
-  };
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
-  );
-}; */
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -69,9 +6,11 @@ import Container from "react-bootstrap/Container";
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError(""); // Reset error message
 
     const data = {
       Username: username,
@@ -85,18 +24,29 @@ export const LoginView = ({ onLoggedIn }) => {
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Invalid username or password");
+        }
+        return response.json();
+      })
       .then((data) => {
-        console.log("Login response: ", data);
+        console.log("Login response:", data); //  Debug the API response
+
         if (data.user && data.token) {
+          // Store user data and token in localStorage
           localStorage.setItem("authToken", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
+          // Pass user and token to MainView
           onLoggedIn(data.user, data.token);
         } else {
-          alert("No such user");
+          throw new Error("Invalid response from server");
         }
       })
-      .catch(() => {
-        alert("Something went wrong");
+      .catch((error) => {
+        console.error("Login error:", error.message);
+        setError(error.message);
       });
   };
 
@@ -107,6 +57,8 @@ export const LoginView = ({ onLoggedIn }) => {
     >
       <div className="w-100" style={{ maxWidth: "400px" }}>
         <h2 className="text-center mb-4">Login</h2>
+        {error && <p className="text-danger text-center">{error}</p>}{" "}
+        {/* Show error message */}
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formUsername" className="mb-3">
             <Form.Label>Username:</Form.Label>
@@ -132,7 +84,7 @@ export const LoginView = ({ onLoggedIn }) => {
           </Form.Group>
 
           <Button variant="primary" type="submit" className="w-100">
-            Submit
+            Login
           </Button>
         </Form>
       </div>

@@ -40,7 +40,6 @@ export const MovieView = ({ movies }) => {
         {director?.deathDate || "N/A"}
       </p>
 
-      {/* Back Button */}
       <button onClick={() => navigate(-1)} className="btn btn-secondary mt-3">
         Back
       </button>

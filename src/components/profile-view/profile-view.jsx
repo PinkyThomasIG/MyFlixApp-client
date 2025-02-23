@@ -1,195 +1,127 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Container, Row, Col } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 
-export const ProfileView = ({ user, token, movies, onDeregister }) => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [newUsername, setNewUsername] = useState(user.username);
-  const [newEmail, setNewEmail] = useState(user.email);
-  const [newBirthday, setNewBirthday] = useState(user.birthday);
-  const [newPassword, setNewPassword] = useState("");
-  const [favoriteMovies, setFavoriteMovies] = useState([]);
+export const ProfileView = ({
+  user,
+  movies,
+  favoriteMovies,
+  onUpdateUser,
+  onDeregister,
+  onToggleFavorite,
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState(user || {});
 
   useEffect(() => {
-    // Fetch the user info using /users endpoint
-    fetch(
-      `https://movieflix-application-717006838e7d.herokuapp.com/users/${user.username}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setUserInfo(data);
-        const userFavoriteMovies = movies.filter((movie) =>
-          data.FavoriteMovies.includes(movie._id)
-        );
-        setFavoriteMovies(userFavoriteMovies);
-      })
-      .catch((error) => console.error("Error fetching user info:", error));
-  }, [token, user.username, movies]);
+    if (user) {
+      setUpdatedUser(user);
+    }
+  }, [user]);
 
-  // Update user info
-  const handleUpdate = () => {
-    const updatedUser = {
-      Username: newUsername,
-      Email: newEmail,
-      Birthday: newBirthday,
-      Password: newPassword,
-    };
-
-    fetch(
-      `https://movieflix-application-717006838e7d.herokuapp.com/users/${user.username}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(updatedUser),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          alert("User updated successfully");
-        } else {
-          alert("Error updating user info");
-        }
-      })
-      .catch((error) => console.error("Error updating user info:", error));
+  const handleEditClick = () => setIsEditing(true);
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setUpdatedUser(user); // Reset to original user data
   };
 
-  // Deregister user
-  const handleDeregister = () => {
-    fetch(
-      `https://movieflix-application-717006838e7d.herokuapp.com/users/${user.username}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          onDeregister();
-          alert("User deregistered successfully");
-        } else {
-          alert("Error deregistering user");
-        }
-      })
-      .catch((error) => console.error("Error deregistering user:", error));
+  const handleSaveChanges = () => {
+    onUpdateUser(updatedUser);
+    setIsEditing(false);
   };
 
-  // Add a movie to the favorites list
-  const handleAddFavorite = (movieId) => {
-    fetch(
-      `https://movieflix-application-717006838e7d.herokuapp.com/users/${user.username}/favorites/${movieId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).then((response) => {
-      if (response.ok) {
-        setFavoriteMovies((prevFavorites) => [
-          ...prevFavorites,
-          movies.find((movie) => movie._id === movieId),
-        ]);
-      } else {
-        alert("Error adding movie to favorites");
-      }
-    });
+  const handleUpdateUserField = (e) => {
+    setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
   };
-
-  // Remove a movie from the favorites list
-  const handleRemoveFavorite = (movieId) => {
-    fetch(
-      `https://movieflix-application-717006838e7d.herokuapp.com/users/${user.username}/favorites/${movieId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).then((response) => {
-      if (response.ok) {
-        setFavoriteMovies((prevFavorites) =>
-          prevFavorites.filter((movie) => movie._id !== movieId)
-        );
-      } else {
-        alert("Error removing movie from favorites");
-      }
-    });
-  };
-
-  if (!userInfo) return <Container>Loading...</Container>;
 
   return (
     <Container className="mt-4">
-      <Row>
-        <Col md={6}>
-          <h2>Profile Information</h2>
-          <Form>
-            <Form.Group controlId="formUsername">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formBirthday">
-              <Form.Label>Birthday</Form.Label>
-              <Form.Control
-                type="date"
-                value={newBirthday}
-                onChange={(e) => setNewBirthday(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" onClick={handleUpdate}>
-              Update
-            </Button>
-          </Form>
-          <Button variant="danger" onClick={handleDeregister}>
-            Deregister
-          </Button>
-        </Col>
+      <h2>Your Profile</h2>
 
-        <Col md={6}>
-          <h2>Favorite Movies</h2>
-          <Row>
-            {favoriteMovies.map((movie) => (
-              <Col key={movie._id} md={4}>
-                <MovieCard movie={movie} onMovieClick={() => {}} />
-                <Button
-                  variant="danger"
-                  onClick={() => handleRemoveFavorite(movie._id)}
-                >
-                  Remove from Favorites
-                </Button>
-              </Col>
-            ))}
-          </Row>
-        </Col>
+      {/* Profile Details Section */}
+      {isEditing ? (
+        <Form>
+          <Form.Group controlId="formUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              name="Username"
+              value={updatedUser.Username || ""}
+              onChange={handleUpdateUserField}
+            />
+          </Form.Group>
+          <Form.Group controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              name="Email"
+              value={updatedUser.Email || ""}
+              onChange={handleUpdateUserField}
+            />
+          </Form.Group>
+          <Form.Group controlId="formDob">
+            <Form.Label>Date of Birth</Form.Label>
+            <Form.Control
+              type="date"
+              name="Birthday"
+              value={
+                updatedUser.Birthday
+                  ? new Date(updatedUser.Birthday).toLocaleDateString("en-CA")
+                  : ""
+              }
+              onChange={handleUpdateUserField}
+            />
+          </Form.Group>
+
+          <div className="d-flex justify-content-end mt-3">
+            <Button variant="secondary" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSaveChanges}
+              className="ms-2"
+            >
+              Save Changes
+            </Button>
+          </div>
+        </Form>
+      ) : (
+        <div>
+          <h4>Username: {user?.Username || "N/A"}</h4>
+          <h5>Email: {user?.Email || "N/A"}</h5>
+          <h5>
+            Date of Birth:{" "}
+            {user?.Birthday
+              ? new Date(user.Birthday).toLocaleDateString()
+              : "N/A"}
+          </h5>
+          <Button variant="primary" onClick={handleEditClick} className="mt-3">
+            Edit Profile
+          </Button>
+        </div>
+      )}
+
+      {/* Favorite Movies Section */}
+      <h3 className="mt-4">Favorite Movies</h3>
+      <Row className="justify-content-center g-4">
+        {favoriteMovies.map((movie) => (
+          <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
+            <MovieCard
+              movie={movie}
+              onToggleFavorite={() => onToggleFavorite(movie._id)} // Unfavorite functionality
+              isFavorite={true} // Always true because we're only passing favorite movies here
+            />
+          </Col>
+        ))}
       </Row>
+
+      {/* Deregister Button */}
+      <div className="d-flex justify-content-end mt-3">
+        <Button variant="danger" onClick={onDeregister}>
+          Deregister
+        </Button>
+      </div>
     </Container>
   );
 };

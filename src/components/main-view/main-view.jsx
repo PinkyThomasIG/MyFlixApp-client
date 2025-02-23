@@ -9,19 +9,24 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ProfileView } from "../profile-view/profile-view"; // Import ProfileView
+import { ProfileView } from "../profile-view/profile-view";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
+  const [deRegistrationMessage, setDeRegistrationMessage] = useState("");
 
-  // Fetch movies when the token is available
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
+    const storedUser = localStorage.getItem("user");
+
     if (storedToken) {
       setToken(storedToken);
+    }
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
@@ -33,20 +38,64 @@ export const MainView = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Movies fetched:", data); // Check the data
         setMovies(data);
       })
       .catch((error) => console.error("Error fetching movies: ", error));
   }, [token]);
 
-  // Handle logout
   const handleLogout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setDeRegistrationMessage(""); // Clear any de-registration message when logging out
   };
 
-  // Render the appropriate view depending on the state
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
+  const favoriteMovies = user
+    ? movies.filter((m) => user.FavoriteMovies.includes(m._id))
+    : [];
+
+  const handleDeregister = () => {
+    if (!user || !user.Username) {
+      console.error("User is not logged in or username is missing");
+      return;
+    }
+
+    const username = user.Username;
+    const url = `https://movieflix-application-717006838e7d.herokuapp.com/users/${username}`;
+
+    console.log("Deregistering user with username:", username);
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("User deregistered successfully");
+          setDeRegistrationMessage("You have been successfully deregistered.");
+          handleLogout(); // Log the user out and clean up their data
+          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+        } else {
+          console.error("Error deregistering user:", response.status);
+          setDeRegistrationMessage("Error deregistering user.");
+          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+        }
+      })
+      .catch((error) => {
+        console.error("Error deregistering user:", error);
+        setDeRegistrationMessage("Error deregistering user.");
+        setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+      });
+  };
+
   if (!user) {
     return (
       <Container className="text-center mt-5">
@@ -63,6 +112,8 @@ export const MainView = () => {
               onLoggedIn={(user, token) => {
                 setUser(user);
                 setToken(token);
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("user", JSON.stringify(user));
               }}
             />
             <Button variant="link" onClick={() => setIsSigningUp(true)}>
@@ -78,54 +129,68 @@ export const MainView = () => {
     <Router>
       <NavigationBar user={user} onLoggedOut={handleLogout} />
 
-      <Routes>
-        {/* Home Page Route (Movie Grid) */}
-        <Route
-          path="/"
-          element={
-            <Container className="mt-4">
-              {/* Logout Button */}
-              <div className="d-flex justify-content-end">
-                <Button variant="danger" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </div>
+      <Container className="mt-4">
+        {/* Display deregistration success or error message */}
+        {deRegistrationMessage && (
+          <div className="alert alert-info">{deRegistrationMessage}</div>
+        )}
 
-              {/* Movie Grid */}
+        <Routes>
+          <Route
+            path="/"
+            element={
               <Row className="justify-content-center g-4">
                 {movies.map((movie) => (
-                  <Col
-                    key={movie._id}
-                    md={4} // Sets the grid to display 3 movies per row
-                    sm={6} // On smaller screens, show 2 movies per row
-                    xs={12} // On extra small screens, show 1 movie per row
-                    className="mb-4"
-                  >
-                    <MovieCard movie={movie} />
+                  <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
+                    <MovieCard
+                      movie={movie}
+                      onToggleFavorite={(movieId) => {
+                        const updatedUser = { ...user };
+                        if (user.FavoriteMovies.includes(movieId)) {
+                          updatedUser.FavoriteMovies =
+                            updatedUser.FavoriteMovies.filter(
+                              (id) => id !== movieId
+                            );
+                        } else {
+                          updatedUser.FavoriteMovies.push(movieId);
+                        }
+                        handleUserUpdate(updatedUser);
+                      }}
+                      isFavorite={user.FavoriteMovies.includes(movie._id)}
+                    />
                   </Col>
                 ))}
               </Row>
-            </Container>
-          }
-        />
-        {/* Profile Page Route */}
-        <Route
-          path="/profile"
-          element={
-            <ProfileView
-              user={user}
-              token={token}
-              movies={movies}
-              onDeregister={() => setUser(null)}
-            />
-          }
-        />
-        {/* Movie Details Route */}
-        <Route
-          path="/movies/:movieId"
-          element={<MovieView movies={movies} />}
-        />
-      </Routes>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProfileView
+                user={user}
+                movies={movies}
+                favoriteMovies={favoriteMovies}
+                onUpdateUser={handleUserUpdate}
+                onToggleFavorite={(movieId) => {
+                  const updatedUser = { ...user };
+                  if (user.FavoriteMovies.includes(movieId)) {
+                    updatedUser.FavoriteMovies =
+                      updatedUser.FavoriteMovies.filter((id) => id !== movieId);
+                  } else {
+                    updatedUser.FavoriteMovies.push(movieId);
+                  }
+                  handleUserUpdate(updatedUser);
+                }}
+                onDeregister={handleDeregister} // Pass deregister handler
+              />
+            }
+          />
+          <Route
+            path="/movies/:movieId"
+            element={<MovieView movies={movies} />}
+          />
+        </Routes>
+      </Container>
     </Router>
   );
 };
