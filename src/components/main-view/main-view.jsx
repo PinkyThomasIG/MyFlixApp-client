@@ -8,7 +8,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProfileView } from "../profile-view/profile-view";
 
@@ -49,7 +48,7 @@ export const MainView = () => {
     setToken(null);
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
-    setDeRegistrationMessage(""); // Clear de-registration message when logging out
+    setDeRegistrationMessage(""); // Clear any de-registration message when logging out
   };
 
   const handleUserUpdate = (updatedUser) => {
@@ -82,18 +81,18 @@ export const MainView = () => {
         if (response.ok) {
           console.log("User deregistered successfully");
           setDeRegistrationMessage("You have been successfully deregistered.");
-          handleLogout();
-          setTimeout(() => setDeRegistrationMessage(""), 3000);
+          handleLogout(); // Log the user out and clean up their data
+          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
         } else {
           console.error("Error deregistering user:", response.status);
           setDeRegistrationMessage("Error deregistering user.");
-          setTimeout(() => setDeRegistrationMessage(""), 3000);
+          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
         }
       })
       .catch((error) => {
         console.error("Error deregistering user:", error);
         setDeRegistrationMessage("Error deregistering user.");
-        setTimeout(() => setDeRegistrationMessage(""), 3000);
+        setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
       });
   };
 
@@ -182,7 +181,7 @@ export const MainView = () => {
                   }
                   handleUserUpdate(updatedUser);
                 }}
-                onDeregister={handleDeregister}
+                onDeregister={handleDeregister} // Pass deregister handler
               />
             }
           />
