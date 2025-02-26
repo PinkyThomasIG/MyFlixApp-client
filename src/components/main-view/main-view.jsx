@@ -18,7 +18,6 @@ export const MainView = () => {
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [deRegistrationMessage, setDeRegistrationMessage] = useState("");
-  const [filter, setFilter] = useState(""); // State for search filter
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -145,19 +144,6 @@ export const MainView = () => {
         {deRegistrationMessage && (
           <div className="alert alert-info">{deRegistrationMessage}</div>
         )}
-
-        {/* Search Bar */}
-        <Form.Control
-          type="text"
-          placeholder="Search movies..."
-          value={filter}
-          onChange={(e) => {
-            setFilter(e.target.value);
-            console.log("Filter updated:", e.target.value); // Check the value of the filter state
-          }}
-          className="mb-3"
-          style={{ height: "40px", backgroundColor: "lightgray" }} // Temporary debugging styles
-        />
 
         <Routes>
           <Route
