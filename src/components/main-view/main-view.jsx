@@ -103,6 +103,10 @@ export const MainView = () => {
     movie.Title.toLowerCase().includes(filter.toLowerCase())
   );
 
+  // Log to check user state and filter value
+  console.log("User state:", user);
+  console.log("Filter value:", filter);
+
   if (!user) {
     return (
       <Container className="text-center mt-5">
@@ -147,8 +151,12 @@ export const MainView = () => {
           type="text"
           placeholder="Search movies..."
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => {
+            setFilter(e.target.value);
+            console.log("Filter updated:", e.target.value); // Check the value of the filter state
+          }}
           className="mb-3"
+          style={{ height: "40px", backgroundColor: "lightgray" }} // Temporary debugging styles
         />
 
         <Routes>
