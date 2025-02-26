@@ -141,7 +141,7 @@ export const MainView = () => {
             path="/"
             element={
               <Row className="justify-content-center g-4">
-                {filteredMovies.map((movie) => (
+                {movies.map((movie) => (
                   <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
                     <MovieCard
                       movie={movie}
