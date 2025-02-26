@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProfileView } from "../profile-view/profile-view";
 
@@ -17,6 +18,7 @@ export const MainView = () => {
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [deRegistrationMessage, setDeRegistrationMessage] = useState("");
+  const [filter, setFilter] = useState(""); // State for search filter
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -48,7 +50,7 @@ export const MainView = () => {
     setToken(null);
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
-    setDeRegistrationMessage(""); // Clear any de-registration message when logging out
+    setDeRegistrationMessage(""); // Clear de-registration message when logging out
   };
 
   const handleUserUpdate = (updatedUser) => {
@@ -81,20 +83,25 @@ export const MainView = () => {
         if (response.ok) {
           console.log("User deregistered successfully");
           setDeRegistrationMessage("You have been successfully deregistered.");
-          handleLogout(); // Log the user out and clean up their data
-          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+          handleLogout();
+          setTimeout(() => setDeRegistrationMessage(""), 3000);
         } else {
           console.error("Error deregistering user:", response.status);
           setDeRegistrationMessage("Error deregistering user.");
-          setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+          setTimeout(() => setDeRegistrationMessage(""), 3000);
         }
       })
       .catch((error) => {
         console.error("Error deregistering user:", error);
         setDeRegistrationMessage("Error deregistering user.");
-        setTimeout(() => setDeRegistrationMessage(""), 3000); // Clear message after 3 seconds
+        setTimeout(() => setDeRegistrationMessage(""), 3000);
       });
   };
+
+  // Filter movies based on search input
+  const filteredMovies = movies.filter((movie) =>
+    movie.Title.toLowerCase().includes(filter.toLowerCase())
+  );
 
   if (!user) {
     return (
@@ -135,12 +142,21 @@ export const MainView = () => {
           <div className="alert alert-info">{deRegistrationMessage}</div>
         )}
 
+        {/* Search Bar */}
+        <Form.Control
+          type="text"
+          placeholder="Search movies..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="mb-3"
+        />
+
         <Routes>
           <Route
             path="/"
             element={
               <Row className="justify-content-center g-4">
-                {movies.map((movie) => (
+                {filteredMovies.map((movie) => (
                   <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
                     <MovieCard
                       movie={movie}
@@ -181,7 +197,7 @@ export const MainView = () => {
                   }
                   handleUserUpdate(updatedUser);
                 }}
-                onDeregister={handleDeregister} // Pass deregister handler
+                onDeregister={handleDeregister}
               />
             }
           />
