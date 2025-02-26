@@ -102,10 +102,6 @@ export const MainView = () => {
     movie.Title.toLowerCase().includes(filter.toLowerCase())
   );
 
-  // Log to check user state and filter value
-  console.log("User state:", user);
-  console.log("Filter value:", filter);
-
   if (!user) {
     return (
       <Container className="text-center mt-5">
