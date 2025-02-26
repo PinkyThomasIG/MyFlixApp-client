@@ -1,63 +1,52 @@
+import { useParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export const MovieView = ({ movie, onBackClick }) => {
+export const MovieView = ({ movies }) => {
+  const { movieId } = useParams(); // Get movieId from the URL
+  const navigate = useNavigate(); // Hook to navigate between pages
+  const movie = movies.find((m) => m._id === movieId); // Find the selected movie by its ID
+
+  if (!movie) {
+    return <h4>Movie not found</h4>; // Handle case when movie is not found
+  }
+
+  const { title, description, genre, director } = movie;
+
   return (
     <div>
-      <div>
-        <span>Title: </span>
-        <span>{movie.title}</span>
-      </div>
-      <div>
-        <p>
-          <span>Description: </span>
-          <span>{movie.description}</span>
-        </p>
-      </div>
-      <div>
-        <span>Genre: {movie.genre.name}</span>
-        <p>{movie.genre.description}</p>
-      </div>
-      <div>
-        <span>Director: {movie.director.name}</span>
-        <p>{movie.director.bio}</p>
-        <p>Birth Date: {movie.director.birthDate}</p>
-        {movie.director.deathDate && (
-          <p>Death Date: {movie.director.deathDate}</p>
-        )}
-      </div>
-      <button
-        onClick={onBackClick}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: "#007BFF",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Back to Movies
+      <h1>{title}</h1>
+      <p>{description}</p>
+
+      <h3>Genre</h3>
+      <p>
+        <strong>{genre?.name}</strong>
+      </p>
+      <p>{genre?.description}</p>
+
+      <h3>Director</h3>
+      <p>
+        <strong>{director?.name}</strong>
+      </p>
+      <p>
+        <em>Bio: </em>
+        {director?.bio}
+      </p>
+      <p>
+        <em>Born: </em>
+        {director?.birthDate}
+      </p>
+      <p>
+        <em>Died: </em>
+        {director?.deathDate || "N/A"}
+      </p>
+
+      <button onClick={() => navigate(-1)} className="btn btn-secondary mt-3">
+        Back
       </button>
     </div>
   );
 };
 
 MovieView.propTypes = {
-  movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    director: PropTypes.shape({
-      bio: PropTypes.string,
-      birthDate: PropTypes.string,
-      deathDate: PropTypes.string,
-      name: PropTypes.string,
-    }),
-    genre: PropTypes.shape({
-      description: PropTypes.string,
-      name: PropTypes.string,
-    }),
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired, // Expect movies as an array
 };
