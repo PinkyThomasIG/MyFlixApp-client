@@ -97,11 +97,6 @@ export const MainView = () => {
       });
   };
 
-  // Filter movies based on search input
-  const filteredMovies = movies.filter((movie) =>
-    movie.Title.toLowerCase().includes(filter.toLowerCase())
-  );
-
   if (!user) {
     return (
       <Container className="text-center mt-5">
