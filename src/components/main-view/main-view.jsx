@@ -98,11 +98,18 @@ export const MainView = () => {
   };
 
   // Filter movies based on the filterTerm
-  const filteredMovies = movies.filter(
-    (movie) =>
-      movie.title &&
-      movie.title.toLowerCase().includes(filterText.toLowerCase())
-  );
+  const filteredMovies = movies.filter((movie) => {
+    console.log("movie.title:", movie.title); // Log the movie title
+    console.log("filterText:", filterText); // Log the filter text
+
+    // Ensure movie.title and filterText are defined and valid
+    if (movie.title && filterText) {
+      return movie.title.toLowerCase().includes(filterText.toLowerCase());
+    }
+
+    // If either is not defined, return false (skip this movie)
+    return false;
+  });
 
   if (!user) {
     return (
