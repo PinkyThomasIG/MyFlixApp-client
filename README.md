@@ -35,3 +35,29 @@ For complete API documentation, visit the `/documentation` endpoint.
 - Node.js
 - MongoDB
 - React
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/movie-app.git
+    cd movie-app
+    npm install
+    npm start
+    npm start
+   ```
+
+### Environment Variables
+
+Ensure to set up the following variables:
+
+    - MONGO_URI for database connection.
+    - HEROKU_API_URL for accessing the hosted API.
+
+### Usage
+
+    - Register or log in as a user.
+    - Browse through the movie catalog.
+    - Click on a movie to view its details.
+    - Add or remove movies from your favorites list.
