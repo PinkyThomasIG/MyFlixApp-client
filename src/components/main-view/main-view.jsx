@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
-import { MovieView } from "../movie-view/movie-view";
-import { LoginView } from "../login-view/login-view";
-import { SignupView } from "../signup-view/signup-view";
-import { NavigationBar } from "../navigation-bar/navigation-bar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProfileView } from "../profile-view/profile-view";
+import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
@@ -17,6 +17,7 @@ export const MainView = () => {
   const [token, setToken] = useState(null);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [deRegistrationMessage, setDeRegistrationMessage] = useState("");
+  const [filterTerm, setFilterTerm] = useState(""); // State to hold filter input
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -96,6 +97,11 @@ export const MainView = () => {
       });
   };
 
+  // Filter movies based on the filterTerm
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(filterTerm.toLowerCase())
+  );
+
   if (!user) {
     return (
       <Container className="text-center mt-5">
@@ -135,12 +141,23 @@ export const MainView = () => {
           <div className="alert alert-info">{deRegistrationMessage}</div>
         )}
 
+        {/* Movie Filter Input */}
+        <div className="mb-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Filter movies by title..."
+            value={filterTerm}
+            onChange={(e) => setFilterTerm(e.target.value)}
+          />
+        </div>
+
         <Routes>
           <Route
             path="/"
             element={
               <Row className="justify-content-center g-4">
-                {movies.map((movie) => (
+                {filteredMovies.map((movie) => (
                   <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
                     <MovieCard
                       movie={movie}
