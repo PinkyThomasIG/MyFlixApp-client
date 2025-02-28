@@ -98,8 +98,10 @@ export const MainView = () => {
   };
 
   // Filter movies based on the filterTerm
-  const filteredMovies = movies.filter((movie) =>
-    movie.title.toLowerCase().includes(filterTerm.toLowerCase())
+  const filteredMovies = movies.filter(
+    (movie) =>
+      movie.title &&
+      movie.title.toLowerCase().includes(filterText.toLowerCase())
   );
 
   if (!user) {
