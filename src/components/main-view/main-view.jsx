@@ -18,6 +18,7 @@ export const MainView = () => {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [deRegistrationMessage, setDeRegistrationMessage] = useState("");
   const [filterTerm, setFilterTerm] = useState(""); // State to hold filter input
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -37,11 +38,20 @@ export const MainView = () => {
     fetch("https://movieflix-application-717006838e7d.herokuapp.com/movies", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch movies");
+        }
+        return response.json();
+      })
       .then((data) => {
         setMovies(data);
+        setLoading(false); // Stop loading when data is fetched
       })
-      .catch((error) => console.error("Error fetching movies: ", error));
+      .catch((error) => {
+        console.error("Error fetching movies: ", error);
+        setLoading(false);
+      });
   }, [token]);
 
   const handleLogout = () => {
@@ -99,16 +109,11 @@ export const MainView = () => {
 
   // Filter movies based on the filterTerm
   const filteredMovies = movies.filter((movie) => {
-    console.log("movie.title:", movie.title); // Log the movie title
-    console.log("filterText:", filterText); // Log the filter text
-
-    // Ensure movie.title and filterText are defined and valid
-    if (movie.title && filterText) {
-      return movie.title.toLowerCase().includes(filterText.toLowerCase());
+    // Only apply filter if filterTerm is not empty
+    if (filterTerm.trim() !== "" && movie.title) {
+      return movie.title.toLowerCase().includes(filterTerm.toLowerCase());
     }
-
-    // If either is not defined, return false (skip this movie)
-    return false;
+    return true; // Show all movies when no filterTerm is provided
   });
 
   if (!user) {
@@ -161,31 +166,39 @@ export const MainView = () => {
           />
         </div>
 
+        {/* Loading Indicator */}
+        {loading && <div>Loading...</div>}
+
+        {/* Display filtered movies */}
         <Routes>
           <Route
             path="/"
             element={
               <Row className="justify-content-center g-4">
-                {filteredMovies.map((movie) => (
-                  <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
-                    <MovieCard
-                      movie={movie}
-                      onToggleFavorite={(movieId) => {
-                        const updatedUser = { ...user };
-                        if (user.FavoriteMovies.includes(movieId)) {
-                          updatedUser.FavoriteMovies =
-                            updatedUser.FavoriteMovies.filter(
-                              (id) => id !== movieId
-                            );
-                        } else {
-                          updatedUser.FavoriteMovies.push(movieId);
-                        }
-                        handleUserUpdate(updatedUser);
-                      }}
-                      isFavorite={user.FavoriteMovies.includes(movie._id)}
-                    />
-                  </Col>
-                ))}
+                {filteredMovies.length === 0 ? (
+                  <p>No movies available.</p> // Show a message if there are no movies
+                ) : (
+                  filteredMovies.map((movie) => (
+                    <Col key={movie._id} md={4} sm={6} xs={12} className="mb-4">
+                      <MovieCard
+                        movie={movie}
+                        onToggleFavorite={(movieId) => {
+                          const updatedUser = { ...user };
+                          if (user.FavoriteMovies.includes(movieId)) {
+                            updatedUser.FavoriteMovies =
+                              updatedUser.FavoriteMovies.filter(
+                                (id) => id !== movieId
+                              );
+                          } else {
+                            updatedUser.FavoriteMovies.push(movieId);
+                          }
+                          handleUserUpdate(updatedUser);
+                        }}
+                        isFavorite={user.FavoriteMovies.includes(movie._id)}
+                      />
+                    </Col>
+                  ))
+                )}
               </Row>
             }
           />
